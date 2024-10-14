@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/iv_event_image"
             android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_height="120dp"
             android:contentDescription="@string/event_image_desc"
             android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"

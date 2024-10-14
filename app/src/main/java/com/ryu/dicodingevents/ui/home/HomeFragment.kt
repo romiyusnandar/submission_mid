@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ryu.dicodingevents.adapter.EventAdapter
+import com.ryu.dicodingevents.adapter.VerticalEventAdapter
 import com.ryu.dicodingevents.data.response.ListEventsItem
 import com.ryu.dicodingevents.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,7 +17,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
-    private lateinit var eventAdapter: EventAdapter
+    private lateinit var horizontalEventAdapter: EventAdapter
+    private lateinit var verticalEventAdapter: VerticalEventAdapter
     private val homeViewModel: HomeViewModel by viewModels()
 
     private var _binding: FragmentHomeBinding? = null
@@ -39,32 +41,44 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        eventAdapter = EventAdapter()
+        horizontalEventAdapter = EventAdapter()
+        verticalEventAdapter = VerticalEventAdapter()
 
         binding.rvHorizontal.apply {
-            adapter = eventAdapter
+            adapter = horizontalEventAdapter
             layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
             setHasFixedSize(true)
         }
 
         binding.rvVertical.apply {
-            adapter = eventAdapter
+            adapter = verticalEventAdapter
             layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
         }
     }
 
     private fun observeViewModel() {
-        homeViewModel.responseEvent.observe(viewLifecycleOwner, Observer { eventList ->
+        homeViewModel.getHorizontalEvents()
+        homeViewModel.horizontalEvents.observe(viewLifecycleOwner) { eventList ->
             if (eventList != null) {
-                eventAdapter.eventList = eventList
+                horizontalEventAdapter.eventList = eventList
                 binding.progressBar.visibility = View.GONE
             } else {
                 binding.progressBar.visibility = View.VISIBLE
             }
-        })
+        }
+
+        homeViewModel.getVerticalEvents()
+        homeViewModel.verticalEvents.observe(viewLifecycleOwner) { eventList ->
+            if (eventList != null) {
+                verticalEventAdapter.eventList = eventList
+                binding.progressBar.visibility = View.GONE
+            } else {
+                binding.progressBar.visibility = View.VISIBLE
+            }
+        }
     }
 
 

@@ -16,22 +16,34 @@ class HomeViewModel
 @Inject
 constructor (private val repository: EventRepository) : ViewModel() {
 
-    private val _response = MutableLiveData<List<ListEventsItem>>()
-    val responseEvent: LiveData<List<ListEventsItem>>
-        get() = _response
+    private val _horizontalEvents = MutableLiveData<List<ListEventsItem>>()
+    val horizontalEvents: LiveData<List<ListEventsItem>> = _horizontalEvents
 
-    init {
-        getAllEvents()
+    private val _verticalEvents = MutableLiveData<List<ListEventsItem>>()
+    val verticalEvents: LiveData<List<ListEventsItem>> = _verticalEvents
+
+    fun getHorizontalEvents() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getEvents("events?active=1")
+                if (response.isSuccessful) {
+                    _horizontalEvents.value = response.body()?.listEvents?.filterNotNull()
+                }
+            } catch (e: Exception) {
+                Log.d("HomeViewModel", "getHorizontalEvents Error: $e")
+            }
+        }
     }
 
-    private fun getAllEvents() = viewModelScope.launch {
-        repository.getAllEvents().let {response ->
-
-            if (response.isSuccessful) {
-                val events = response.body()?.listEvents?.filterNotNull()
-                _response.postValue(events ?: emptyList())
-            } else {
-                Log.d("tag", "getAllEvents Error: ${response.code()}")
+    fun getVerticalEvents() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getEvents("events?active=0")
+                if (response.isSuccessful) {
+                    _verticalEvents.value = response.body()?.listEvents?.filterNotNull()
+                }
+            } catch (e: Exception) {
+                Log.d("HomeViewModel", "getVerticalEvents Error: $e")
             }
         }
     }

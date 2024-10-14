@@ -8,5 +8,5 @@ class EventRepository
 
 constructor(private val apiService: ApiService) {
 
-    suspend fun getAllEvents() = apiService.getAllEvents()
+    suspend fun getEvents(endpoint: String) = apiService.getAllEvents(endpoint)
 }

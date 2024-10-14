@@ -41,7 +41,6 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
 
         holder.binding.apply {
             tvEventTitle.text = currentEvent.name
-            tvEventDesc.text = currentEvent.description
             ivEventImage.load(currentEvent.mediaCover) {
                 crossfade(true)
                 crossfade(1000)

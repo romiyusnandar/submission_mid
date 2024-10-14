@@ -7,4 +7,5 @@
     <string name="title_event">Dicoding Event</string>
     <string name="title_event_2">Upcoming Events</string>
     <string name="event_image_desc">Event image</string>
+    <string name="finished_events">Finished Events</string>
 </resources>

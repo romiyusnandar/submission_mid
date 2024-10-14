@@ -66,4 +66,16 @@ class VerticalEventAdapter : RecyclerView.Adapter<VerticalEventAdapter.MyViewHol
     fun setData(newList: List<ListEventsItem>) {
         eventList = newList
     }
+
+    fun filter(query: String) {
+        val filteredList = if (query.isEmpty()) {
+            eventList
+        } else {
+            eventList.filter {
+                it.name?.contains(query, ignoreCase = true) == true ||
+                        it.summary?.contains(query, ignoreCase = true) == true
+            }
+        }
+        differ.submitList(filteredList)
+    }
 }

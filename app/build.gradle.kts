@@ -75,5 +75,4 @@ dependencies {
 
     //coil
     implementation(libs.coil)
-
 }

@@ -9,4 +9,6 @@
     <string name="event_image_desc">Event image</string>
     <string name="finished_events">Finished Events</string>
     <string name="search_hint">Cari events...</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

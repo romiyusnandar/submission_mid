@@ -1,16 +1,18 @@
 package com.ryu.dicodingevents.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ryu.dicodingevents.R
 import com.ryu.dicodingevents.adapter.EventAdapter
 import com.ryu.dicodingevents.adapter.VerticalEventAdapter
-import com.ryu.dicodingevents.data.response.ListEventsItem
 import com.ryu.dicodingevents.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,7 +43,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        horizontalEventAdapter = EventAdapter()
+        horizontalEventAdapter = EventAdapter { event ->
+            Navigation.findNavController(requireView())
+                .navigate(R.id.detailFragment, Bundle().apply {
+                    putString("eventId", event.id.toString())
+                })
+            Log.d("HomeFragment", "Navigating to DetailFragment with eventId: ${event.id}")
+        }
+
         verticalEventAdapter = VerticalEventAdapter()
 
         binding.rvHorizontal.apply {
@@ -80,7 +89,6 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -9,7 +9,12 @@
         android:id="@+id/navigation_home"
         android:name="com.ryu.dicodingevents.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/actionHomeFragmentToDetailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_upcoming"
@@ -22,4 +27,14 @@
         android:name="com.ryu.dicodingevents.ui.complete.CompleteFragment"
         android:label="@string/title_complete"
         tools:layout="@layout/fragment_complete" />
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.ryu.dicodingevents.ui.DetailFragment"
+        android:label="Event Detail">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+    </fragment>
+
 </navigation>

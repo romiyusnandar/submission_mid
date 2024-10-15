@@ -9,7 +9,9 @@ import coil.load
 import com.ryu.dicodingevents.data.response.ListEventsItem
 import com.ryu.dicodingevents.databinding.ItemEventBinding
 
-class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
+class EventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
+    RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
+
     class MyViewHolder(val binding: ItemEventBinding) :
     RecyclerView.ViewHolder(binding.root)
 
@@ -31,7 +33,8 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        val binding = ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
     }
 
     override fun getItemCount(): Int = eventList.size
@@ -44,6 +47,9 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
             ivEventImage.load(currentEvent.mediaCover) {
                 crossfade(true)
                 crossfade(1000)
+            }
+            root.setOnClickListener {
+                onItemClick(currentEvent)
             }
         }
     }

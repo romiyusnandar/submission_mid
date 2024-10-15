@@ -2,8 +2,19 @@ package com.ryu.dicodingevents.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class ResponseItem(
+//data class ResponseItem(
+//
+//	@field:SerializedName("listEvents")
+//	val listEvents: List<ListEventsItem?>? = null,
+//
+//	@field:SerializedName("error")
+//	val error: Boolean? = null,
+//
+//	@field:SerializedName("message")
+//	val message: String? = null
+//)
 
+data class ResponseItem(
 	@field:SerializedName("listEvents")
 	val listEvents: List<ListEventsItem?>? = null,
 
@@ -11,7 +22,10 @@ data class ResponseItem(
 	val error: Boolean? = null,
 
 	@field:SerializedName("message")
-	val message: String? = null
+	val message: String? = null,
+
+	@field:SerializedName("event")
+	val event: ListEventsItem? = null
 )
 
 data class ListEventsItem(

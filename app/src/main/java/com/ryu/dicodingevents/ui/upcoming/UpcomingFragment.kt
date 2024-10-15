@@ -1,6 +1,7 @@
 package com.ryu.dicodingevents.ui.upcoming
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,9 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ryu.dicodingevents.R
 import com.ryu.dicodingevents.adapter.VerticalEventAdapter
 import com.ryu.dicodingevents.databinding.FragmentUpcomingBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,7 +70,13 @@ class UpcomingFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        upcomingAdapter = VerticalEventAdapter()
+        upcomingAdapter = VerticalEventAdapter { event ->
+            Navigation.findNavController(requireView())
+                .navigate(R.id.detailFragment, Bundle().apply {
+                    putString("eventId", event.id.toString())
+                })
+            Log.d("UpcomingFragment", "Navigating to DetailFragment with eventId: ${event.id}")
+        }
         binding.rvVertical.apply {
             adapter = upcomingAdapter
             layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)

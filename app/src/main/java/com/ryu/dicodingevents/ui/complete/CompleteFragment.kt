@@ -1,14 +1,18 @@
 package com.ryu.dicodingevents.ui.complete
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ryu.dicodingevents.R
 import com.ryu.dicodingevents.adapter.EventAdapter
 import com.ryu.dicodingevents.adapter.GridAdapter
+import com.ryu.dicodingevents.adapter.VerticalEventAdapter
 import com.ryu.dicodingevents.databinding.FragmentCompleteBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,9 +42,15 @@ class CompleteFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        eventAdapter = GridAdapter()
+        eventAdapter = GridAdapter { event ->
+            Navigation.findNavController(requireView())
+                .navigate(R.id.detailFragment, Bundle().apply {
+                    putString("eventId", event.id.toString())
+                })
+            Log.d("GridFragment", "Navigating to DetailFragment with eventId: ${event.id}")
+        }
         binding.rvComplete.apply {
-            layoutManager = GridLayoutManager(context, 2) // 2 columns
+            layoutManager = GridLayoutManager(context, 2)
             adapter = eventAdapter
         }
     }

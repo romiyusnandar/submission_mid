@@ -10,7 +10,8 @@ import coil.load
 import com.ryu.dicodingevents.data.response.ListEventsItem
 import com.ryu.dicodingevents.databinding.ItemEventVerticalBinding
 
-class VerticalEventAdapter : RecyclerView.Adapter<VerticalEventAdapter.MyViewHolder>() {
+class VerticalEventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
+    RecyclerView.Adapter<VerticalEventAdapter.MyViewHolder>() {
 
     class MyViewHolder(val binding: ItemEventVerticalBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -34,13 +35,8 @@ class VerticalEventAdapter : RecyclerView.Adapter<VerticalEventAdapter.MyViewHol
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
-            ItemEventVerticalBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+        val binding = ItemEventVerticalBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
     }
 
     override fun getItemCount(): Int = eventList.size
@@ -59,6 +55,9 @@ class VerticalEventAdapter : RecyclerView.Adapter<VerticalEventAdapter.MyViewHol
             ivEventImage.load(currentEvent.mediaCover) {
                 crossfade(true)
                 crossfade(1000)
+            }
+            root.setOnClickListener {
+                onItemClick(currentEvent)
             }
         }
     }

@@ -1,9 +1,7 @@
 package com.ryu.dicodingevents.data.repository
 
 import com.ryu.dicodingevents.data.response.ListEventsItem
-import com.ryu.dicodingevents.data.response.ResponseItem
 import com.ryu.dicodingevents.data.retrofit.ApiService
-import retrofit2.Response
 import javax.inject.Inject
 
 

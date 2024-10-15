@@ -8,31 +8,34 @@ import coil.load
 import com.ryu.dicodingevents.data.response.ListEventsItem
 import com.ryu.dicodingevents.databinding.ItemGridBinding
 
-class GridAdapter : RecyclerView.Adapter<GridAdapter.GridViewHolder>() {
+class GridAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
+    RecyclerView.Adapter<GridAdapter.GridViewHolder>() {
 
     private var eventList: List<ListEventsItem> = listOf()
 
-    class GridViewHolder(private val binding: ItemGridBinding) :
+    class GridViewHolder(val binding: ItemGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(event: ListEventsItem) {
-            binding.apply {
-                tvEventTitle.text = event.name
-                ivEventImage.load(event.mediaCover) {
-                    crossfade(true)
-                    crossfade(1000)
-                }
-            }
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridViewHolder {
         val binding = ItemGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return GridViewHolder(binding)
+
     }
 
     override fun onBindViewHolder(holder: GridViewHolder, position: Int) {
-        holder.bind(eventList[position])
+        val currentEvent = eventList[position]
+
+        holder.binding.apply {
+            tvEventTitle.text = currentEvent.name
+            ivEventImage.load(currentEvent.mediaCover) {
+                crossfade(true)
+                crossfade(1000)
+            }
+            root.setOnClickListener {
+                onItemClick(currentEvent)
+            }
+        }
     }
 
     override fun getItemCount(): Int = eventList.size

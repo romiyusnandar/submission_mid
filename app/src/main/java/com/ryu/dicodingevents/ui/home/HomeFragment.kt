@@ -51,7 +51,13 @@ class HomeFragment : Fragment() {
             Log.d("HomeFragment", "Navigating to DetailFragment with eventId: ${event.id}")
         }
 
-        verticalEventAdapter = VerticalEventAdapter()
+        verticalEventAdapter = VerticalEventAdapter { event ->
+            Navigation.findNavController(requireView())
+                .navigate(R.id.detailFragment, Bundle().apply {
+                    putString("eventId", event.id.toString())
+                })
+            Log.d("HomeFragment", "Navigating to DetailFragment with eventId: ${event.id}")
+        }
 
         binding.rvHorizontal.apply {
             adapter = horizontalEventAdapter

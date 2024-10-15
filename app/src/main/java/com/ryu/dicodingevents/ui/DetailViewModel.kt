@@ -21,6 +21,9 @@ class DetailViewModel @Inject constructor(private val repository: EventRepositor
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
     fun getEvent(eventId: String) {
         viewModelScope.launch {
             try {

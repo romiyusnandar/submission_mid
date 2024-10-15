@@ -22,9 +22,13 @@ constructor (private val repository: EventRepository) : ViewModel() {
     private val _verticalEvents = MutableLiveData<List<ListEventsItem>>()
     val verticalEvents: LiveData<List<ListEventsItem>> = _verticalEvents
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
     fun getHorizontalEvents() {
         viewModelScope.launch {
             try {
+                _isLoading.value = true
                 val response = repository.getEvents("events?active=1")
                 if (response.isSuccessful) {
                     _horizontalEvents.value = response.body()?.listEvents?.filterNotNull()
@@ -38,6 +42,7 @@ constructor (private val repository: EventRepository) : ViewModel() {
     fun getVerticalEvents() {
         viewModelScope.launch {
             try {
+                _isLoading.value = true
                 val response = repository.getEvents("events?active=0")
                 if (response.isSuccessful) {
                     _verticalEvents.value = response.body()?.listEvents?.filterNotNull()

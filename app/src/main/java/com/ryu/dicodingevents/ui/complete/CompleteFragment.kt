@@ -59,6 +59,9 @@ class CompleteFragment : Fragment() {
         completeViewModel.completedEvents.observe(viewLifecycleOwner) { events ->
             eventAdapter.setData(events)
         }
+        completeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
     }
 
     override fun onDestroyView() {

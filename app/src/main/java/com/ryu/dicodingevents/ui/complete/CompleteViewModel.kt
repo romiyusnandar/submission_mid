@@ -17,6 +17,9 @@ class CompleteViewModel @Inject constructor(private val repository: EventReposit
     private val _completedEvents = MutableLiveData<List<ListEventsItem>>()
     val completedEvents: LiveData<List<ListEventsItem>> = _completedEvents
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+    
     fun getCompletedEvents() {
         viewModelScope.launch {
             try {

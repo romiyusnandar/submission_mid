@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import coil.load
 import com.ryu.dicodingevents.data.response.ListEventsItem
 import com.ryu.dicodingevents.databinding.FragmentDetailBinding
@@ -58,6 +57,10 @@ class DetailFragment : Fragment() {
             if (errorMessage != null) {
                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
             }
+        }
+
+        detailViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 

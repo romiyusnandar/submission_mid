@@ -92,6 +92,10 @@ class UpcomingFragment : Fragment() {
         upcomingViewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
         }
+
+        upcomingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
     }
 
 

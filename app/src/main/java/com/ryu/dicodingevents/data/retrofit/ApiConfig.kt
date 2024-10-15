@@ -11,18 +11,13 @@ object ApiClient {
 }
 
 object ApiConfig {
-    fun getApiService(): ApiService {
-        val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .build()
-        val retrofit = Retrofit.Builder()
-            .baseUrl(ApiClient.BASE_URL)
+    private const val BASE_URL = "https://event-api.dicoding.dev/"
+
+    val apiService: ApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
             .build()
-        return retrofit.create(ApiService::class.java)
+            .create(ApiService::class.java)
     }
 }

@@ -5,67 +5,79 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ryu.dicodingevents.R
 import com.ryu.dicodingevents.adapter.EventAdapter
 import com.ryu.dicodingevents.adapter.GridAdapter
+import com.ryu.dicodingevents.adapter.UpcomingAdapter
 import com.ryu.dicodingevents.adapter.VerticalEventAdapter
 import com.ryu.dicodingevents.databinding.FragmentCompleteBinding
+import com.ryu.dicodingevents.databinding.FragmentUpcomingBinding
+import com.ryu.dicodingevents.ui.upcoming.CompleteViewModel
+import com.ryu.dicodingevents.ui.upcoming.UpcomingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CompleteFragment : Fragment() {
 
-    private var _binding: FragmentCompleteBinding? = null
+    private var _binding: FragmentUpcomingBinding? = null
     private val binding get() = _binding!!
-    private val completeViewModel: CompleteViewModel by viewModels()
-    private lateinit var eventAdapter: GridAdapter
+    private lateinit var upcomingAdapter: UpcomingAdapter
+    private lateinit var viewModel: CompleteViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCompleteBinding.inflate(inflater, container, false)
+        _binding = FragmentUpcomingBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
-        observeViewModel()
-        completeViewModel.getCompletedEvents()
-    }
+        Log.d("UpcomingFragment", "onViewCreated: Fragment is created")
 
-    private fun setupRecyclerView() {
-        eventAdapter = GridAdapter { event ->
-            Navigation.findNavController(requireView())
-                .navigate(R.id.detailFragment, Bundle().apply {
-                    putString("eventId", event.id.toString())
-                })
-            Log.d("GridFragment", "Navigating to DetailFragment with eventId: ${event.id}")
-        }
-        binding.rvComplete.apply {
-            layoutManager = GridLayoutManager(context, 2)
-            adapter = eventAdapter
-        }
-    }
+        viewModel = ViewModelProvider(this)[CompleteViewModel::class.java]
+        upcomingAdapter = UpcomingAdapter()
 
-    private fun observeViewModel() {
-        completeViewModel.completedEvents.observe(viewLifecycleOwner) { events ->
-            eventAdapter.setData(events)
+        binding.rvActiveEvents.layoutManager = LinearLayoutManager(requireActivity())
+        binding.rvActiveEvents.adapter = upcomingAdapter
+
+        viewModel.events.observe(viewLifecycleOwner) { events ->
+            Log.d("UpcomingFragment", "Observed events: $events")
+            if (events != null && events.isNotEmpty()) {
+                upcomingAdapter.setEvents(events)
+            } else {
+                Log.w("UpcomingFragment", "No events available")
+            }
         }
-        completeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
+
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+            if (error.isNotEmpty()) {
+                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                Log.e("UpcomingFragment", "Error: $error")
+            }
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
 }

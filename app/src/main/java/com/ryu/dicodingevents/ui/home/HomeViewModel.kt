@@ -52,4 +52,5 @@ constructor (private val repository: EventRepository) : ViewModel() {
             }
         }
     }
+
 }

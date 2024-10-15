@@ -21,6 +21,8 @@ class HomeFragment : Fragment() {
     private lateinit var horizontalEventAdapter: EventAdapter
     private lateinit var verticalEventAdapter: VerticalEventAdapter
     private val homeViewModel: HomeViewModel by viewModels()
+    private var horizontalDataLoaded = false
+    private var verticalDataLoaded = false
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -78,7 +80,8 @@ class HomeFragment : Fragment() {
         homeViewModel.horizontalEvents.observe(viewLifecycleOwner) { eventList ->
             if (eventList != null) {
                 horizontalEventAdapter.eventList = eventList
-                binding.progressBar.visibility = View.GONE
+                horizontalDataLoaded = true
+                checkDataLoadingComplete()
             } else {
                 binding.progressBar.visibility = View.VISIBLE
             }
@@ -88,14 +91,27 @@ class HomeFragment : Fragment() {
         homeViewModel.verticalEvents.observe(viewLifecycleOwner) { eventList ->
             if (eventList != null) {
                 verticalEventAdapter.eventList = eventList
-                binding.progressBar.visibility = View.GONE
+                verticalDataLoaded = true
+                checkDataLoadingComplete()
             } else {
                 binding.progressBar.visibility = View.VISIBLE
             }
         }
 
         homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            if (isLoading) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.tvTitle2.visibility = View.VISIBLE
+                binding.tvTitle3.visibility = View.VISIBLE
+                checkDataLoadingComplete()
+            }
+        }
+    }
+
+    private fun checkDataLoadingComplete() {
+        if (horizontalDataLoaded && verticalDataLoaded && !homeViewModel.isLoading.value!!) {
+            binding.progressBar.visibility = View.GONE
         }
     }
 

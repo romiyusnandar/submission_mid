@@ -1,64 +1,55 @@
 package com.ryu.dicodingevents.ui.upcoming
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ryu.dicodingevents.data.repository.EventRepository
 import com.ryu.dicodingevents.data.response.ListEventsItem
+import com.ryu.dicodingevents.data.retrofit.ApiConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UpcomingViewModel
-@Inject
-constructor(private val repository: EventRepository) : ViewModel() {
+class UpcomingViewModel @Inject
+constructor(): ViewModel() {
 
-    private val _responseUpcoming = MutableLiveData<List<ListEventsItem>>()
-    val responseUpcoming: LiveData<List<ListEventsItem>> = _responseUpcoming
 
-    private var originalEvents: List<ListEventsItem> = listOf()
-
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _events = MutableLiveData<List<ListEventsItem>>()
+    val events: LiveData<List<ListEventsItem>> = _events
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
+
     init {
-        getUpcomingEvents()
+        getActiveEvents()
     }
 
-    private fun getUpcomingEvents() {
+    @SuppressLint("NullSafeMutableLiveData")
+    private fun getActiveEvents() {
         viewModelScope.launch {
+            _isLoading.value = true
             try {
-                val response = repository.getEvents("events?active=1")
-                if (response.isSuccessful) {
-                    originalEvents = response.body()?.listEvents?.filterNotNull() ?: listOf()
-                    _responseUpcoming.value = originalEvents
+                val response = ApiConfig.apiService.getEvents(1) // 1 for active events
+                if (!response.error!!) {
+                    _events.value = response.listEvents as List<ListEventsItem>?
+                    Log.d("UpcomingViewModel", "Events fetched successfully: ${response.listEvents}")
                 } else {
-                    _error.value = "Failed to fetch events"
+                    _error.value = response.message
+                    Log.e("UpcomingViewModel", "Error fetching events: ${response.message}")
                 }
             } catch (e: Exception) {
-                _error.value = "Error: ${e.message}"
-                Log.e("UpcomingViewModel", "getUpcomingEvents Error: $e")
+                _error.value = "Tidak dapat terhubungan dengan server api, mendapatkan error berikut: ${e.message}"
+                Log.e("UpcomingViewModel", "Exception: ${e.message}")
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
-    fun searchUpcomingEvents(query: String) {
-        if (query.isEmpty()) {
-            _responseUpcoming.value = originalEvents
-        } else {
-            _responseUpcoming.value = originalEvents.filter { event ->
-                event.name?.contains(query, ignoreCase = true) == true
-            }
-        }
-    }
-
-    fun resetSearch() {
-        _responseUpcoming.value = originalEvents
-    }
 }

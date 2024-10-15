@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.os.Build.*
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -35,6 +34,7 @@ class DetailFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -43,13 +43,22 @@ class DetailFragment : Fragment() {
             detailViewModel.getEvent(eventId)
         }
 
+        // Menampilkan progress bar saat data sedang dimuat
+        binding.progressBar.visibility = View.VISIBLE
         observeViewModel()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun observeViewModel() {
         detailViewModel.eventDetail.observe(viewLifecycleOwner) { event ->
+            // Jika event tidak null, perbarui UI
             if (event != null) {
+                // Tampilkan progress bar saat memproses dan memperbarui UI
                 updateUI(event)
+                binding.progressBar.visibility = View.GONE // Sembunyikan progress bar setelah UI diperbarui
+            } else {
+                // Jika event null, tetap tampilkan progress bar
+                binding.progressBar.visibility = View.VISIBLE
             }
         }
 
@@ -65,7 +74,7 @@ class DetailFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    @RequiresApi(VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun updateUI(event: ListEventsItem) {
         binding.apply {
             tvEventTitle.text = event.name
@@ -87,6 +96,9 @@ class DetailFragment : Fragment() {
 
             tvEventQuota.text = "Quota: ${event.registrants}/${event.quota}"
 
+            val sisaQuota = (event.quota ?: 0) - (event.registrants ?: 0)
+            tvSisaQuota.text = "Sisa Quota: $sisaQuota"
+
             btnOpenLink.setOnClickListener {
                 event.link?.let { url ->
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -98,7 +110,7 @@ class DetailFragment : Fragment() {
         }
     }
 
-    @RequiresApi(VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun parseDateTime(dateTimeString: String): LocalDateTime? {
         return try {
             LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))

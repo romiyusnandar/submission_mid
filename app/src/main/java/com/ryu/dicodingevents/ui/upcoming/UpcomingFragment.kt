@@ -5,26 +5,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ryu.dicodingevents.R
-import com.ryu.dicodingevents.adapter.VerticalEventAdapter
+import com.ryu.dicodingevents.adapter.UpcomingAdapter
 import com.ryu.dicodingevents.databinding.FragmentUpcomingBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class UpcomingFragment : Fragment() {
 
-
     private var _binding: FragmentUpcomingBinding? = null
     private val binding get() = _binding!!
-    private lateinit var upcomingAdapter: VerticalEventAdapter
-    private val upcomingViewModel: UpcomingViewModel by viewModels()
+    private lateinit var upcomingAdapter: UpcomingAdapter
+    private lateinit var viewModel: UpcomingViewModel
 
 
     override fun onCreateView(
@@ -40,61 +35,32 @@ class UpcomingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupSearchView()
-        setupRecyclerView()
-        observeViewModel()
+        Log.d("UpcomingFragment", "onViewCreated: Fragment is created")
 
-    }
+        viewModel = ViewModelProvider(this)[UpcomingViewModel::class.java]
+        upcomingAdapter = UpcomingAdapter()
 
-    private fun setupSearchView() {
-        binding.search.apply {
-            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    query?.let { upcomingViewModel.searchUpcomingEvents(it) }
-                    return true
-                }
+        binding.rvActiveEvents.layoutManager = LinearLayoutManager(requireActivity())
+        binding.rvActiveEvents.adapter = upcomingAdapter
 
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    newText?.let { upcomingViewModel.searchUpcomingEvents(it) }
-                    return true
-                }
-            })
-
-            setOnCloseListener {
-                upcomingViewModel.resetSearch()
-                setQuery("", false)
-                clearFocus()
-                true
+        viewModel.events.observe(viewLifecycleOwner) { events ->
+            Log.d("UpcomingFragment", "Observed events: $events")
+            if (events != null && events.isNotEmpty()) {
+                upcomingAdapter.setEvents(events)
+            } else {
+                Log.w("UpcomingFragment", "No events available")
             }
         }
-    }
 
-    private fun setupRecyclerView() {
-        upcomingAdapter = VerticalEventAdapter { event ->
-            Navigation.findNavController(requireView())
-                .navigate(R.id.detailFragment, Bundle().apply {
-                    putString("eventId", event.id.toString())
-                })
-            Log.d("UpcomingFragment", "Navigating to DetailFragment with eventId: ${event.id}")
-        }
-        binding.rvVertical.apply {
-            adapter = upcomingAdapter
-            layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
-            setHasFixedSize(true)
-        }
-    }
-
-    private fun observeViewModel() {
-        upcomingViewModel.responseUpcoming.observe(viewLifecycleOwner) { eventList ->
-            upcomingAdapter.setData(eventList)
-        }
-
-        upcomingViewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
-        }
-
-        upcomingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+            if (error.isNotEmpty()) {
+                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                Log.e("UpcomingFragment", "Error: $error")
+            }
         }
     }
 

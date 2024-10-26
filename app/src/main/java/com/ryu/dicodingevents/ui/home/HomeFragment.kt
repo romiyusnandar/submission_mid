@@ -63,8 +63,7 @@ class HomeFragment : Fragment() {
         homeViewModel.horizontalEvents.observe(viewLifecycleOwner) { eventList ->
             if (eventList != null) {
                 horizontalEventAdapter.eventList = eventList
-                horizontalDataLoaded = true
-                checkDataLoadingComplete()
+                binding.progressBar.visibility = View.GONE
             } else {
                 binding.progressBar.visibility = View.VISIBLE
             }
@@ -75,16 +74,10 @@ class HomeFragment : Fragment() {
                 binding.progressBar.visibility = View.VISIBLE
             } else {
                 binding.tvTitle2.visibility = View.VISIBLE
-                checkDataLoadingComplete()
             }
         }
     }
 
-    private fun checkDataLoadingComplete() {
-        if (horizontalDataLoaded) {
-            binding.progressBar.visibility = View.GONE
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -28,6 +28,7 @@ constructor (private val repository: EventRepository) : ViewModel() {
                 _isLoading.value = true
                 val response = repository.getEvents("events?active=1")
                 if (response.isSuccessful) {
+                    _isLoading.value = false
                     _horizontalEvents.value = response.body()?.listEvents?.filterNotNull()
                 }
             } catch (e: Exception) {

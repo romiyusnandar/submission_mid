@@ -1,10 +1,14 @@
-package com.ryu.dicodingevents.data.di
+package com.ryu.dicodingevents.di
 
+import android.content.Context
 import com.ryu.dicodingevents.data.retrofit.ApiClient
 import com.ryu.dicodingevents.data.retrofit.ApiService
+import com.ryu.dicodingevents.utils.ThemePreferences
+import com.ryu.dicodingevents.utils.dataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,4 +29,10 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideThemePreferences(@ApplicationContext context: Context): ThemePreferences {
+        return ThemePreferences(context.dataStore)
+    }
 }

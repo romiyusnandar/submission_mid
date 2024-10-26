@@ -19,9 +19,6 @@ constructor (private val repository: EventRepository) : ViewModel() {
     private val _horizontalEvents = MutableLiveData<List<ListEventsItem>>()
     val horizontalEvents: LiveData<List<ListEventsItem>> = _horizontalEvents
 
-    private val _verticalEvents = MutableLiveData<List<ListEventsItem>>()
-    val verticalEvents: LiveData<List<ListEventsItem>> = _verticalEvents
-
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -35,20 +32,6 @@ constructor (private val repository: EventRepository) : ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.d("HomeViewModel", "getHorizontalEvents Error: $e")
-            }
-        }
-    }
-
-    fun getVerticalEvents() {
-        viewModelScope.launch {
-            try {
-                _isLoading.value = true
-                val response = repository.getEvents("events?active=0")
-                if (response.isSuccessful) {
-                    _verticalEvents.value = response.body()?.listEvents?.filterNotNull()
-                }
-            } catch (e: Exception) {
-                Log.d("HomeViewModel", "getVerticalEvents Error: $e")
             }
         }
     }

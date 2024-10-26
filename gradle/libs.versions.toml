@@ -1,9 +1,10 @@
 [versions]
 activityKtx = "1.9.2"
-agp = "8.8.0-alpha05"
+agp = "8.8.0-alpha07"
 coil = "2.4.0"
 coilVersion = "2.4.0"
 converterGson = "2.9.0"
+datastorePreferences = "1.1.1"
 glide = "4.16.0"
 hiltAndroid = "2.33-beta"
 hiltAndroidCompiler = "2.51"
@@ -31,10 +32,13 @@ roomCompiler = "2.6.1"
 symbolProcessingApi = "2.0.20-1.0.24"
 viewpager2 = "1.1.0"
 activity = "1.9.2"
+legacySupportV4 = "1.0.0"
+fragmentKtx = "1.8.4"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleViewmodelKtxVersion" }
 androidx-lifecycle-viewmodel-ktx-v231 = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtxVersion" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
@@ -65,6 +69,8 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "symbolProcessingApi" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

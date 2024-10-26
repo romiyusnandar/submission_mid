@@ -17,12 +17,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_upcoming"
-        android:name="com.ryu.dicodingevents.ui.upcoming.UpcomingFragment"
-        android:label="@string/title_upcoming"
-        tools:layout="@layout/fragment_upcoming" />
-
-    <fragment
         android:id="@+id/navigation_complete"
         android:name="com.ryu.dicodingevents.ui.complete.CompleteFragment"
         android:label="@string/title_complete"
@@ -36,5 +30,16 @@
             android:name="eventId"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.ryu.dicodingevents.ui.favorite.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" />
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="com.ryu.dicodingevents.ui.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
 
 </navigation>

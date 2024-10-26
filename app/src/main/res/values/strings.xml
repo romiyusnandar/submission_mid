@@ -14,4 +14,8 @@
     <string name="event_btn">Lihat event</string>
     <string name="waktu_event">Waktu</string>
     <string name="penyelengra_acara">Penyelnggara</string>
+    <string name="favorite">Favorite\n</string>
+    <string name="setting">Setting</string>
+    <string name="complete_event">Complete event</string>
+    <string name="dark_mode">dark mode</string>
 </resources>
